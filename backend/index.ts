@@ -1,8 +1,12 @@
 import app from "./src/app";
 import { connectDB } from "./src/config/database";
+import {createServer} from 'http'
 
 
 const PORT = process.env.PORT || 3000;
+const HttpServer =  createServer(app);
+
+initializeSocket(HttpServer)
 
 connectDB()
     .then(()=>{
