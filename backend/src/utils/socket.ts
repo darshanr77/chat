@@ -15,8 +15,8 @@ export const initialzieSocket = (httpserver: HttpServer) => {
     const allowedOrigins = [
         "https://localhost:8081", // mobile
         "https://localhost:5173",
-        process.env.FRONTEND_URL!,
-    ];
+        process.env.FRONTEND_URL,
+    ].filter(Boolean) as String[];
 
     const io = new SocketServer(httpserver, { cors: { origin: allowedOrigins } });
 
@@ -34,7 +34,7 @@ export const initialzieSocket = (httpserver: HttpServer) => {
 
             if (!user) return next(new Error("User not found"));
 
-            (socket as SocketWithUserId).userId = user._id.toString();
+            socket.data.userId = user._id.toString();
 
             next(); // FIXED: missing next()
         } catch (error) {
@@ -43,7 +43,7 @@ export const initialzieSocket = (httpserver: HttpServer) => {
     });
 
     io.on("connection", (socket) => {
-        const userId = (socket as SocketWithUserId).userId;
+        const userId = socket.data.userId;
 
         // send list of currently online users to the newly connected client
         socket.emit("online-users", { userIds: Array.from(onlineUsers.keys()) });
@@ -89,7 +89,7 @@ export const initialzieSocket = (httpserver: HttpServer) => {
                 chat.lastMessageAt = new Date();
                 await chat.save();
 
-                await message.populate("sender", "name email avatar");
+                await message.populate("sender", "name  avatar");
 
                 // emit to users inside chat
                 io.to(`chat:${chatId}`).emit("new-message", message); // FIXED template
