@@ -2,7 +2,7 @@ import type { NextFunction, Response } from "express";
 import type { AuthRequest } from "../middleware/auth";
 import { User } from "../models/User";
 
-async function getUsers(req:AuthRequest,res:Response,next:NextFunction) {
+export async function getUsers(req:AuthRequest,res:Response,next:NextFunction) {
     try {
         const userId = req.userId;
 

@@ -3,7 +3,7 @@ import type { AuthRequest } from "../middleware/auth";
 import { Chat } from "../models/Chat";
 import { Message } from "../models/Message";
 
-async function getMessages(req:AuthRequest,res:Response,next:NextFunction) {
+export async function getMessages(req:AuthRequest,res:Response,next:NextFunction) {
     try {
         const userId = req.userId;
         const { chatId } = req.params;
@@ -18,7 +18,7 @@ async function getMessages(req:AuthRequest,res:Response,next:NextFunction) {
             return;
         }
 
-        const message = await Message.findOne({ chat : chatId })
+        const message = await Message.find({ chat : chatId })
         .populate("sender","name email avatar")
         .sort({createdAt : 1}); // oldest message in top first
 
